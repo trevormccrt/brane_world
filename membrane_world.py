@@ -5,7 +5,7 @@ import membrane_core
 
 
 def batch_random_particle_flux(membrane: torch.Tensor, n_samples):
-    nbatch = np.prod(membrane.shape[:-2])
+    nbatch = np.prod(membrane.shape[:-2]).astype(int)
     flat_membrane = membrane.view(-1)
     to_set_zero = np.random.choice(flat_membrane.shape[-1], n_samples * nbatch, replace=False)
     flat_membrane[to_set_zero] = 0
@@ -14,7 +14,7 @@ def batch_random_particle_flux(membrane: torch.Tensor, n_samples):
 
 
 def apply_physics_random(membrane: torch.Tensor, physical_model: torch.nn.Module, n_updates, window_size):
-    batch_size = np.prod(membrane.shape[:-2])
+    batch_size = np.prod(membrane.shape[:-2]).astype(int)
     rolls = np.random.randint(-1 * window_size, window_size, (2))
     membrane_rolled = torch.roll(membrane, tuple(rolls), (-1, -2))
     membrane_blocked = membrane_core.form_submatrices(membrane_rolled, window_size)
